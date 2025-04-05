@@ -3,54 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acetic Acid/Sodium Acetate Buffer Simulation</title>
+    <title>Acetic Acid/Sodium Acetate Buffer Simulation (shadcn/ui style)</title>
+    <!-- Using Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Shadcn/ui Inspired CSS Variables */
+        /* Basic shadcn/ui-inspired CSS Variables (Light Mode Defaults) */
         :root {
             --background: 0 0% 100%; /* white */
-            --foreground: 222.2 84% 4.9%; /* near black */
+            --foreground: 240 10% 3.9%; /* near black */
             --card: 0 0% 100%;
-            --card-foreground: 222.2 84% 4.9%;
+            --card-foreground: 240 10% 3.9%;
             --popover: 0 0% 100%;
-            --popover-foreground: 222.2 84% 4.9%;
-            --primary: 248 57% 57%; /* Muted Purple/Blue similar to example */
-            --primary-foreground: 0 0% 100%; /* white */
-            --secondary: 210 40% 96.1%;
-            --secondary-foreground: 222.2 47.4% 11.2%;
-            --muted: 210 40% 96.1%;
-            --muted-foreground: 215.4 16.3% 46.9%;
-            --accent: 210 40% 96.1%;
-            --accent-foreground: 222.2 47.4% 11.2%;
+            --popover-foreground: 240 10% 3.9%;
+            --primary: 240 5.9% 10%;
+            --primary-foreground: 0 0% 98%;
+            --secondary: 240 4.8% 95.9%;
+            --secondary-foreground: 240 5.9% 10%;
+            --muted: 240 4.8% 95.9%;
+            --muted-foreground: 240 3.8% 46.1%;
+            --accent: 240 4.8% 95.9%;
+            --accent-foreground: 240 5.9% 10%;
             --destructive: 0 84.2% 60.2%;
-            --destructive-foreground: 210 40% 98%;
-            --border: 214.3 31.8% 91.4%;
-            --input: 214.3 31.8% 91.4%;
-            --ring: 248 57% 57%; /* primary */
+            --destructive-foreground: 0 0% 98%;
+            --border: 240 5.9% 90%;
+            --input: 240 5.9% 90%;
+            --ring: 240 5.9% 10%;
             --radius: 0.5rem;
         }
 
+        /* Dark Mode Variables */
         .dark {
-            --background: 222.2 84% 4.9%; /* near black */
-            --foreground: 210 40% 98%; /* near white */
-            --card: 222.2 84% 4.9%;
-            --card-foreground: 210 40% 98%;
-            --popover: 222.2 84% 4.9%;
-            --popover-foreground: 210 40% 98%;
-            --primary: 248 57% 67%; /* Lighter primary for dark */
-            --primary-foreground: 222.2 47.4% 11.2%; /* dark */
-            --secondary: 217.2 32.6% 17.5%;
-            --secondary-foreground: 210 40% 98%;
-            --muted: 217.2 32.6% 17.5%;
-            --muted-foreground: 215 20.2% 65.1%;
-            --accent: 217.2 32.6% 17.5%;
-            --accent-foreground: 210 40% 98%;
+            --background: 240 10% 3.9%; /* near black */
+            --foreground: 0 0% 98%; /* near white */
+            --card: 240 10% 3.9%;
+            --card-foreground: 0 0% 98%;
+            --popover: 240 10% 3.9%;
+            --popover-foreground: 0 0% 98%;
+            --primary: 0 0% 98%;
+            --primary-foreground: 240 5.9% 10%;
+            --secondary: 240 3.7% 15.9%;
+            --secondary-foreground: 0 0% 98%;
+            --muted: 240 3.7% 15.9%;
+            --muted-foreground: 240 5% 64.9%;
+            --accent: 240 3.7% 15.9%;
+            --accent-foreground: 0 0% 98%;
             --destructive: 0 62.8% 30.6%;
-            --destructive-foreground: 210 40% 98%;
-            --border: 217.2 32.6% 17.5%;
-            --input: 217.2 32.6% 17.5%;
-            --ring: 248 57% 67%; /* primary */
+            --destructive-foreground: 0 0% 98%;
+            --border: 240 3.7% 15.9%;
+            --input: 240 3.7% 15.9%;
+            --ring: 0 0% 98%;
         }
 
         /* Apply base styles */
@@ -60,37 +63,116 @@
             transition: background-color 0.2s, color 0.2s;
         }
 
-        /* Style range inputs slightly better */
-         input[type="range"] {
-             height: 0.5rem; /* h-2 */
-             cursor: pointer;
-             appearance: none;
-             border-radius: 0.5rem; /* rounded-lg */
-             background-color: hsl(var(--primary) / 0.2); /* primary background with opacity */
-             width: 100%;
-         }
-         /* Thumb styles */
-         input[type="range"]::-webkit-slider-thumb {
-             appearance: none;
-             width: 1rem; /* w-4 */
-             height: 1rem; /* h-4 */
-             background-color: hsl(var(--primary));
-             border-radius: 9999px; /* rounded-full */
-             cursor: pointer;
-         }
-         input[type="range"]::-moz-range-thumb {
-             width: 1rem;
-             height: 1rem;
-             background-color: hsl(var(--primary));
-             border-radius: 9999px;
-             cursor: pointer;
-             border: none; /* Remove default border in Firefox */
-         }
+        /* Component Styles (Simulating shadcn/ui with Tailwind) */
+        .card {
+            background-color: hsl(var(--card));
+            color: hsl(var(--card-foreground));
+            border-radius: var(--radius);
+            border: 1px solid hsl(var(--border));
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06); /* Basic shadow */
+        }
+        .dark .card {
+             box-shadow: 0 1px 3px 0 rgba(0,0,0,0.3), 0 1px 2px 0 rgba(0,0,0,0.2); /* Darker shadow */
+        }
 
+        .card-header { padding: 1.5rem; padding-bottom: 0; }
+        .card-title { font-size: 1.25rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.025em; }
+        .card-description { color: hsl(var(--muted-foreground)); font-size: 0.875rem; }
+        .card-content { padding: 1.5rem; }
+        .card-footer { padding: 1.5rem; padding-top: 0; }
+
+        .label { font-size: 0.875rem; font-weight: 500; line-height: 1; margin-bottom: 0.5rem; display: block;}
+
+        .slider-track {
+            position: relative;
+            width: 100%;
+            height: 0.5rem; /* 8px */
+            background-color: hsl(var(--secondary));
+            border-radius: 9999px; /* rounded-full */
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .slider-range {
+            position: absolute;
+            height: 100%;
+            background-color: hsl(var(--primary));
+        }
+        .slider-thumb {
+            display: block;
+            position: absolute;
+            width: 1rem; /* 16px */
+            height: 1rem; /* 16px */
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: hsl(var(--primary));
+            border: 2px solid hsl(var(--primary-foreground)); /* Adjust if needed */
+            border-radius: 9999px;
+            cursor: pointer;
+            pointer-events: none; /* Thumb doesn't block clicks on track */
+        }
+        /* Hidden actual range input */
+        .slider-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem; /* Adjust as needed */
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border: 1px solid transparent;
+        }
+        .button:hover {
+             background-color: hsl(var(--primary) / 0.9); /* Slight opacity change */
+        }
+        .button-secondary {
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+            border-color: hsl(var(--border));
+        }
+        .button-secondary:hover {
+            background-color: hsl(var(--secondary) / 0.8);
+        }
+
+
+        .progress-root {
+            position: relative;
+            height: 1rem; /* h-4 */
+            width: 100%;
+            overflow: hidden;
+            border-radius: var(--radius);
+            background-color: hsl(var(--secondary));
+        }
+        .progress-indicator {
+            height: 100%;
+            width: 0%; /* Controlled by JS */
+            background-color: hsl(var(--primary));
+            transition: width 0.3s ease-out;
+        }
+
+        /* Specific adjustment for visualization legend colors */
+        .legend-dot { width: 0.75rem; height: 0.75rem; border-radius: 9999px; display: inline-block; margin-right: 0.5rem; flex-shrink: 0;}
     </style>
     <script>
-        tailwind.config = {
-            darkMode: 'class', // Ensure dark mode is activated by class
+        // Simple Tailwind config object (not used by CDN but good for reference)
+        const tailwindConfig = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -129,282 +211,266 @@
                         },
                     },
                     borderRadius: {
-                        lg: "var(--radius)",
-                        md: "calc(var(--radius) - 2px)",
-                        sm: "calc(var(--radius) - 4px)",
+                        lg: `var(--radius)`,
+                        md: `calc(var(--radius) - 2px)`,
+                        sm: 'calc(var(--radius) - 4px)',
                     },
                 }
             }
         }
     </script>
 </head>
-<body class="bg-background text-foreground"> {/* Use CSS variables */}
-    <div class="container mx-auto px-4 py-8 max-w-5xl">
-        <h1 class="text-3xl font-bold text-center mb-4 text-primary">Acetic Acid/Sodium Acetate Buffer Simulation</h1>
-        <p class="text-center text-muted-foreground mb-8">Demonstrating buffer action when HCl is added to the system</p>
+<body class="transition-colors duration-200">
+    <div class="container mx-auto px-4 py-8 max-w-6xl"> <!-- Increased max-width slightly -->
+        <h1 class="text-3xl font-bold text-center mb-2 tracking-tight">Acetic Acid/Sodium Acetate Buffer</h1>
+        <p class="text-center text-muted-foreground mb-8">Simulating buffer action against HCl addition</p>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Controls Panel -->
-            <div class="bg-card text-card-foreground border border-border rounded-lg p-6 shadow-sm"> {/* Card styling */}
-                <h2 class="text-xl font-semibold mb-4 tracking-tight">Buffer Components</h2>
-
-                <!-- Acetic Acid Concentration -->
-                <div class="mb-6">
-                    <label class="block mb-2 text-sm font-medium text-foreground" for="acetic-concentration"> {/* Adjusted text */}
-                        Acetic Acid Concentration (M):
-                        <span id="acetic-value" class="ml-2 font-bold">0.100</span>
-                    </label>
-                    {/* Use custom slider styles via CSS + accent-primary for fallback */}
-                    <input type="range" id="acetic-concentration" min="0.01" max="0.5" step="0.01" value="0.1" class="accent-primary">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Buffer Setup</h2>
                 </div>
+                <div class="card-content space-y-6">
+                    <!-- Acetic Acid Concentration -->
+                    <div>
+                        <label class="label" for="acetic-concentration">
+                            Acetic Acid (M): <span id="acetic-value" class="font-semibold text-primary">0.100</span>
+                        </label>
+                        <!-- Custom Slider -->
+                        <div class="slider-track">
+                            <div id="acetic-range" class="slider-range"></div>
+                            <div id="acetic-thumb" class="slider-thumb"></div>
+                            <input type="range" id="acetic-concentration" min="0.01" max="0.5" step="0.01" value="0.1" class="slider-input">
+                        </div>
+                    </div>
 
-                <!-- Sodium Acetate Concentration -->
-                <div class="mb-6">
-                    <label class="block mb-2 text-sm font-medium text-foreground" for="acetate-concentration">
-                        Sodium Acetate Concentration (M):
-                        <span id="acetate-value" class="ml-2 font-bold">0.100</span>
-                    </label>
-                    <input type="range" id="acetate-concentration" min="0.01" max="0.5" step="0.01" value="0.1" class="accent-primary">
-                </div>
+                    <!-- Sodium Acetate Concentration -->
+                    <div>
+                        <label class="label" for="acetate-concentration">
+                            Sodium Acetate (M): <span id="acetate-value" class="font-semibold text-primary">0.100</span>
+                        </label>
+                         <div class="slider-track">
+                            <div id="acetate-range" class="slider-range"></div>
+                            <div id="acetate-thumb" class="slider-thumb"></div>
+                            <input type="range" id="acetate-concentration" min="0.01" max="0.5" step="0.01" value="0.1" class="slider-input">
+                        </div>
+                    </div>
 
-                <!-- HCl Addition -->
-                <div class="mb-6">
-                    <label class="block mb-2 text-sm font-medium text-foreground" for="hcl-concentration">
-                        HCl Added (M):
-                        <span id="hcl-value" class="ml-2 font-bold">0.000</span>
-                    </label>
-                    <input type="range" id="hcl-concentration" min="0" max="0.2" step="0.001" value="0" class="accent-primary">
-                </div>
+                    <!-- HCl Addition -->
+                    <div>
+                        <label class="label" for="hcl-concentration">
+                            HCl Added (M): <span id="hcl-value" class="font-semibold text-destructive">0.000</span>
+                        </label>
+                         <div class="slider-track">
+                            <div id="hcl-range" class="slider-range" style="background-color: hsl(var(--destructive));"></div>
+                             <div id="hcl-thumb" class="slider-thumb" style="background-color: hsl(var(--destructive)); border-color: hsl(var(--destructive-foreground));"></div>
+                            <input type="range" id="hcl-concentration" min="0" max="0.2" step="0.001" value="0" class="slider-input">
+                        </div>
+                    </div>
 
-                <!-- Ka Value -->
-                <div class="flex items-center mb-6 text-sm">
-                    <span class="font-medium text-foreground">Ka of Acetic Acid:</span>
-                    <span id="ka-value" class="ml-2 font-mono text-muted-foreground">1.8 × 10⁻⁵</span>
-                    <span class="ml-2 font-medium text-muted-foreground">(pKa = 4.74)</span>
-                </div>
+                    <!-- Ka Value -->
+                    <div class="text-sm pt-2">
+                        <span class="font-medium">Ka (Acetic Acid):</span>
+                        <span id="ka-value" class="ml-2 font-mono text-muted-foreground">1.8 × 10⁻⁵</span>
+                        <span class="ml-2 font-medium text-muted-foreground">(pKa = 4.74)</span>
+                    </div>
 
-                <div class="mb-6">
-                    {/* Button styling */}
-                    <button id="reset-btn" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-                        Reset Simulation
-                    </button>
+                    <div>
+                        <button id="reset-btn" class="button w-full mt-2">
+                            Reset Simulation
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- pH and Buffer Capacity Panel -->
-            <div class="bg-card text-card-foreground border border-border rounded-lg p-6 shadow-sm"> {/* Card styling */}
-                <h2 class="text-xl font-semibold mb-4 tracking-tight">pH and Buffer Capacity</h2>
-
-                <!-- pH Values -->
-                <div class="mb-6 grid grid-cols-2 gap-4">
-                     {/* Inner card/box styling */}
-                    <div class="bg-background border border-border p-3 rounded-md">
-                        <h3 class="text-sm font-medium text-muted-foreground">Initial pH</h3>
-                        <p id="initial-ph" class="text-2xl font-bold text-foreground">4.74</p>
-                    </div>
-                    <div class="bg-background border border-border p-3 rounded-md">
-                        <h3 class="text-sm font-medium text-muted-foreground">Current pH</h3>
-                        <p id="current-ph" class="text-2xl font-bold text-foreground">4.74</p>
-                    </div>
+            <div class="card">
+                 <div class="card-header">
+                    <h2 class="card-title">System State</h2>
                 </div>
-
-                <!-- Buffer Capacity Gauge -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium text-muted-foreground mb-2">Buffer Capacity</h3>
-                     {/* Gauge track */}
-                    <div class="h-2 bg-muted rounded-full overflow-hidden">
-                        {/* Gauge bar - using primary color */}
-                        <div id="buffer-capacity-bar" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 transition-all duration-300" style="width: 50%"></div>
+                <div class="card-content space-y-4">
+                     <!-- pH Values -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="border rounded-md p-3 text-center bg-secondary">
+                            <h3 class="text-xs font-medium text-muted-foreground uppercase tracking-wider">Initial pH</h3>
+                            <p id="initial-ph" class="text-2xl font-bold">4.74</p>
+                        </div>
+                        <div class="border rounded-md p-3 text-center bg-secondary">
+                            <h3 class="text-xs font-medium text-muted-foreground uppercase tracking-wider">Current pH</h3>
+                            <p id="current-ph" class="text-2xl font-bold">4.74</p>
+                        </div>
                     </div>
-                    <div class="flex justify-between text-xs text-muted-foreground mt-1">
-                        <span>Low</span>
-                        <span>Medium</span>
-                        <span>High</span>
+
+                     <!-- pH Change Info -->
+                    <div class="border rounded-md p-3 text-center bg-secondary">
+                        <h3 class="text-xs font-medium text-muted-foreground uppercase tracking-wider">pH Change vs Initial</h3>
+                        <p id="ph-change" class="text-xl font-bold">0.00</p>
                     </div>
-                </div>
 
-                <!-- pH Change Info -->
-                <div class="bg-background border border-border p-3 rounded-md mb-4">
-                    <h3 class="text-sm font-medium text-muted-foreground">pH Change with HCl</h3>
-                    <p id="ph-change" class="text-xl font-bold text-foreground">0.00</p>
-                </div>
+                    <!-- Buffer Capacity Gauge -->
+                    <div>
+                        <h3 class="label mb-1 text-muted-foreground">Buffer Capacity</h3>
+                        <div class="progress-root">
+                             <div id="buffer-capacity-bar" class="progress-indicator bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"></div>
+                        </div>
+                        <div class="flex justify-between text-xs mt-1 text-muted-foreground">
+                            <span>Low</span>
+                            <span>High</span>
+                        </div>
+                    </div>
 
-                <!-- Henderson-Hasselbalch Equation -->
-                 {/* Muted background for code/equation */}
-                <div class="p-3 border border-border rounded-md bg-muted/50">
-                    <h3 class="text-sm font-medium mb-2 text-foreground">Henderson-Hasselbalch Equation:</h3>
-                    <p class="font-mono text-center text-sm text-muted-foreground">pH = pKa + log([CH₃COO⁻]/[CH₃COOH])</p>
-                    <p id="hh-equation-values" class="font-mono text-center text-sm mt-2 text-muted-foreground">4.74 = 4.74 + log(0.1/0.1)</p>
+                    <!-- Henderson-Hasselbalch Equation -->
+                    <div class="p-3 border rounded-md bg-muted/50">
+                        <h3 class="text-sm font-medium mb-2 text-center">Henderson-Hasselbalch:</h3>
+                        <p class="font-mono text-center text-sm">pH = pKa + log([A⁻]/[HA])</p>
+                        <p id="hh-equation-values" class="font-mono text-center text-sm mt-2 text-muted-foreground">4.74 = 4.74 + log(0.100/0.100)</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Visualization & Charts -->
-            <div class="bg-card text-card-foreground border border-border rounded-lg p-6 shadow-sm"> {/* Card styling */}
-                <h2 class="text-xl font-semibold mb-4 tracking-tight">Concentration Changes</h2>
-
-                <!-- Concentration Chart -->
-                <div class="w-full h-60 mb-4">
-                    <canvas id="concentration-chart"></canvas>
+             <div class="card">
+                 <div class="card-header">
+                    <h2 class="card-title">Concentrations & pH Curve</h2>
                 </div>
+                <div class="card-content space-y-6">
+                    <!-- Concentration Chart -->
+                    <div>
+                         <h3 class="label mb-1 text-muted-foreground">Species Concentrations</h3>
+                        <div class="w-full h-56">
+                            <canvas id="concentration-chart"></canvas>
+                        </div>
+                    </div>
 
-                <!-- pH vs HCl Chart -->
-                <h3 class="text-md font-medium mt-4 mb-2 text-foreground">Buffer Action: pH vs HCl Added</h3>
-                <div class="w-full h-40">
-                    <canvas id="ph-curve-chart"></canvas>
+                    <!-- pH vs HCl Chart -->
+                     <div>
+                        <h3 class="label mt-4 mb-1 text-muted-foreground">Buffer Action: pH vs HCl Added</h3>
+                        <div class="w-full h-48">
+                            <canvas id="ph-curve-chart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Molecular Visualization -->
-        <div class="mt-6 bg-card text-card-foreground border border-border rounded-lg p-6 shadow-sm"> {/* Card styling */}
-            <h2 class="text-xl font-semibold mb-4 tracking-tight">Molecular Visualization</h2>
-             {/* Visualization area border and muted background */}
-            <div id="visualization" class="border border-border rounded-md h-64 relative overflow-hidden bg-muted/30">
-                <!-- Particles will be added here by JS -->
-            </div>
+        <div class="mt-6 card">
+             <div class="card-header">
+                 <h2 class="card-title">Molecular View (Conceptual)</h2>
+             </div>
+             <div class="card-content">
+                <div id="visualization" class="border rounded-md h-64 relative overflow-hidden bg-muted">
+                    <!-- Particles will be added here by JS -->
+                </div>
 
-            {/* Legend styling */}
-            <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-2 text-sm text-muted-foreground">
-                <div class="flex items-center">
-                    <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block mr-2"></span>
-                    <span>CH₃COOH</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 rounded-full bg-green-500 inline-block mr-2"></span>
-                    <span>CH₃COO⁻</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 rounded-full bg-purple-500 inline-block mr-2"></span>
-                    <span>Na⁺</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 rounded-full bg-red-500 inline-block mr-2"></span>
-                    <span>H⁺</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 rounded-full bg-blue-500 inline-block mr-2"></span>
-                    <span>Cl⁻</span>
+                <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 text-sm text-muted-foreground">
+                    <div class="flex items-center">
+                        <span class="legend-dot bg-yellow-500"></span>
+                        <span>CH₃COOH</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="legend-dot bg-green-500"></span>
+                        <span>CH₃COO⁻</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="legend-dot bg-purple-500"></span>
+                        <span>Na⁺</span>
+                    </div>
+                    <div class="flex items-center">
+                         <span class="legend-dot bg-red-500"></span>
+                        <span>H⁺ (from HCl/Equil.)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="legend-dot bg-blue-500"></span>
+                        <span>Cl⁻</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Explanation -->
-        <div class="mt-6 bg-card text-card-foreground border border-border rounded-lg p-6 shadow-sm"> {/* Card styling */}
-            <h2 class="text-xl font-semibold mb-4 tracking-tight">Understanding Buffer Action</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                <div>
-                    <h3 class="font-semibold mb-2 text-foreground">How This Buffer Works</h3>
-                    <p class="mb-3 text-muted-foreground leading-relaxed">
-                        A buffer is a solution that resists changes in pH when small amounts of acid or base are added. The acetic acid/sodium acetate buffer works through the following equilibrium:
-                    </p>
-                    {/* Code block styling */}
-                    <p class="text-center mb-3 font-mono bg-muted/50 border border-border rounded-md p-2 text-xs text-muted-foreground">
-                        CH₃COOH(aq) ⇌ CH₃COO⁻(aq) + H⁺(aq)
-                    </p>
-                    <p class="mb-3 text-muted-foreground leading-relaxed">
-                        When HCl is added, it dissociates completely:
-                    </p>
-                     <p class="text-center mb-3 font-mono bg-muted/50 border border-border rounded-md p-2 text-xs text-muted-foreground">
-                        HCl(aq) → H⁺(aq) + Cl⁻(aq)
-                    </p>
-                    <p class="text-muted-foreground leading-relaxed">
-                        The excess H⁺ ions react with acetate ions (CH₃COO⁻) to form acetic acid (CH₃COOH), minimizing the change in pH. This is the buffer action.
-                    </p>
+        <div class="mt-6 card">
+             <div class="card-header">
+                 <h2 class="card-title">Understanding Buffer Action</h2>
+             </div>
+             <div class="card-content">
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold mb-2">How This Buffer Works</h3>
+                        <div class="space-y-3 text-sm text-muted-foreground">
+                             <p>
+                                A buffer resists pH changes upon addition of small amounts of acid or base. This acetic acid (CH₃COOH) / sodium acetate (provides CH₃COO⁻) buffer relies on the equilibrium:
+                            </p>
+                            <p class="text-center my-3 font-mono p-2 bg-muted rounded-md border text-card-foreground">
+                                CH₃COOH(aq) ⇌ CH₃COO⁻(aq) + H⁺(aq)
+                            </p>
+                             <p>
+                                Added strong acid (HCl) dissociates completely:
+                            </p>
+                            <p class="text-center my-3 font-mono p-2 bg-muted rounded-md border text-card-foreground">
+                                HCl(aq) → H⁺(aq) + Cl⁻(aq)
+                            </p>
+                            <p>
+                                The added H⁺ ions are consumed by the acetate ions (CH₃COO⁻, the conjugate base) shifting the equilibrium left, thus minimizing the increase in free [H⁺] and stabilizing the pH:
+                             </p>
+                              <p class="text-center my-3 font-mono p-2 bg-muted rounded-md border text-card-foreground">
+                                H⁺(added) + CH₃COO⁻(aq) → CH₃COOH(aq)
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2">Buffer Capacity Factors</h3>
+                        <ul class="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                            <li>Capacity is highest when [CH₃COOH] ≈ [CH₃COO⁻] (ratio near 1:1), meaning pH ≈ pKa.</li>
+                            <li>Higher total concentrations of both buffer components ([HA] + [A⁻]) lead to greater capacity.</li>
+                            <li>Most effective buffering occurs within pH = pKa ± 1 (here, approx. 3.74 - 5.74).</li>
+                            <li>Adding excessive acid (or base) will eventually overwhelm the buffer, causing rapid pH change.</li>
+                            <li>The Henderson-Hasselbalch equation relates pH, pKa, and the ratio of the conjugate base [A⁻] to the weak acid [HA].</li>
+                        </ul>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="font-semibold mb-2 text-foreground">Buffer Capacity Factors</h3>
-                    <ul class="list-disc list-inside text-muted-foreground space-y-2 leading-relaxed">
-                        <li>Buffer capacity is highest when [CH₃COOH] ≈ [CH₃COO⁻] (ratio ≈ 1:1)</li>
-                        <li>Buffer capacity increases with higher total buffer concentration</li>
-                        <li>A buffer is most effective when pH is within ±1 unit of the pKa (here, 3.74-5.74)</li>
-                        <li>The buffer can be overwhelmed if excessive acid/base is added</li>
-                        <li>The Henderson-Hasselbalch equation relates pH, pKa, and component concentrations</li>
-                    </ul>
-                </div>
-            </div>
+             </div>
         </div>
     </div>
 
     <script>
-        // Function to get color from CSS variable
-        function getCssVariable(variable) {
-            return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+        // Dark mode toggle based on system preference
+        function applyDarkModePreference() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
         }
-         // Function to convert HSL string to rgba for Chart.js
-        function hslToRgba(hslString, alpha = 1) {
-            // Check if it's already rgba or hex
-             if (hslString.startsWith('rgba')) return hslString;
-             if (hslString.startsWith('#')) return hslString; // Basic hex support
+        applyDarkModePreference(); // Apply on initial load
 
-            try {
-                // Simple HSL string parser (e.g., "248 57% 57%")
-                 const [h, s, l] = hslString.split(' ').map((val, index) => {
-                     return parseFloat(val.replace('%', ''));
-                 });
-                 
-                 const saturation = s / 100;
-                 const lightness = l / 100;
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyDarkModePreference);
 
-                let c = (1 - Math.abs(2 * lightness - 1)) * saturation;
-                let x = c * (1 - Math.abs((h / 60) % 2 - 1));
-                let m = lightness - c/2;
-                let r = 0, g = 0, b = 0;
-
-                if (0 <= h && h < 60) { r = c; g = x; b = 0; }
-                else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
-                else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
-                else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
-                else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
-                else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
-
-                r = Math.round((r + m) * 255);
-                g = Math.round((g + m) * 255);
-                b = Math.round((b + m) * 255);
-
-                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-            } catch (e) {
-                 console.error("Failed to parse HSL:", hslString, e);
-                 // Fallback color
-                 return `rgba(0, 0, 0, ${alpha})`;
-             }
-         }
-
-        // Initialize dark mode based on user preference
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-
-        // Watch for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-             if (!('theme' in localStorage)) { // Only respect system change if no theme is explicitly set
-                if (event.matches) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
-                // Re-init charts on theme change
-                 if (concentrationChart) concentrationChart.destroy();
-                 if (phCurveChart) phCurveChart.destroy();
-                 initCharts();
-                 updateUI();
-             }
-        });
+        // --- Simulation Logic (mostly unchanged, but DOM references updated) ---
 
         // DOM elements
         const aceticConcentration = document.getElementById('acetic-concentration');
         const aceticValue = document.getElementById('acetic-value');
+        const aceticRange = document.getElementById('acetic-range');
+        const aceticThumb = document.getElementById('acetic-thumb');
+
         const acetateConcentration = document.getElementById('acetate-concentration');
         const acetateValue = document.getElementById('acetate-value');
+        const acetateRange = document.getElementById('acetate-range');
+        const acetateThumb = document.getElementById('acetate-thumb');
+
         const hclConcentration = document.getElementById('hcl-concentration');
         const hclValue = document.getElementById('hcl-value');
+        const hclRange = document.getElementById('hcl-range');
+        const hclThumb = document.getElementById('hcl-thumb');
+
         const kaValue = document.getElementById('ka-value');
         const initialPh = document.getElementById('initial-ph');
         const currentPh = document.getElementById('current-ph');
         const phChange = document.getElementById('ph-change');
         const hhEquationValues = document.getElementById('hh-equation-values');
-        const bufferCapacityBar = document.getElementById('buffer-capacity-bar');
+        const bufferCapacityProgress = document.getElementById('buffer-capacity-bar'); // Updated ID
         const resetBtn = document.getElementById('reset-btn');
         const visualization = document.getElementById('visualization');
 
@@ -413,44 +479,52 @@
         let phCurveChart = null;
 
         // Constants
-        const KA_ACETIC = 1.8e-5;  // Ka of acetic acid
-        const PKA_ACETIC = -Math.log10(KA_ACETIC); // pKa of acetic acid
+        const KA_ACETIC = 1.8e-5;
+        const PKA_ACETIC = -Math.log10(KA_ACETIC);
 
         // State variables
         let aceticConc = parseFloat(aceticConcentration.value);
         let acetateConc = parseFloat(acetateConcentration.value);
         let hclConc = parseFloat(hclConcentration.value);
         let initialPHValue = 0;
-        let phCurveData = [];
         let particles = [];
-        let animationFrame; // Store animation frame request
+        let animationFrame; // For particle animation
+
+        // --- Utility function to get CSS variable ---
+        function getCssVariable(variable) {
+            return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+        }
+
+        // --- Slider UI Update ---
+        function updateSliderVisual(sliderElement, rangeElement, thumbElement) {
+            const min = parseFloat(sliderElement.min);
+            const max = parseFloat(sliderElement.max);
+            const value = parseFloat(sliderElement.value);
+            const percentage = ((value - min) / (max - min)) * 100;
+            rangeElement.style.width = `${percentage}%`;
+            thumbElement.style.left = `calc(${percentage}% - ${percentage / 100 * 16}px)`; // Adjust thumb based on its size (16px)
+        }
+
 
         // Initialize Charts
         function initCharts() {
-             const isDarkMode = document.documentElement.classList.contains('dark');
+             // Destroy existing charts if they exist
+            if (concentrationChart) concentrationChart.destroy();
+            if (phCurveChart) phCurveChart.destroy();
 
-             // Get colors from CSS variables
-             const primaryColor = hslToRgba(getCssVariable('--primary'));
-             const textColor = hslToRgba(getCssVariable('--foreground'));
-             const gridColor = hslToRgba(getCssVariable('--border'), 0.5); // Use border color with alpha for grid
-             const mutedColor = hslToRgba(getCssVariable('--muted'));
-             const redColor = 'rgba(239, 68, 68, 0.7)'; // Keep explicit red for comparison curve
-
-             // Particle colors (kept same for visual consistency)
-             const particleColors = {
-                 acetic: 'rgba(245, 158, 11, 0.9)', // yellow-500 adjusted alpha
-                 acetate: 'rgba(16, 185, 129, 0.9)', // green-500 adjusted alpha
-                 na: 'rgba(168, 85, 247, 0.9)', // purple-500 adjusted alpha
-                 h: 'rgba(239, 68, 68, 0.9)', // red-500 adjusted alpha
-                 cl: 'rgba(59, 130, 246, 0.9)', // blue-500 adjusted alpha
-             };
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            // Use CSS variables for colors
+            const textColor = `hsl(${getCssVariable('--foreground')})`;
+            const gridColor = `hsl(${getCssVariable('--border')})`;
+            const primaryColor = `hsl(${getCssVariable('--primary')})`;
+            const destructiveColor = `hsl(${getCssVariable('--destructive')})`;
+            const secondaryColor = `hsl(${getCssVariable('--secondary')})`; // For less prominent elements
 
             // Concentration chart
             const concentrationCanvas = document.getElementById('concentration-chart');
             if (!concentrationCanvas) return;
             const concentrationCtx = concentrationCanvas.getContext('2d');
             if (!concentrationCtx) return;
-
             concentrationChart = new Chart(concentrationCtx, {
                 type: 'bar',
                 data: {
@@ -458,46 +532,36 @@
                     datasets: [{
                         label: 'Concentration (M)',
                         data: [0, 0, 0, 0, 0],
+                        // Using fixed colors for chemical species consistency
                         backgroundColor: [
-                            particleColors.acetic,
-                            particleColors.acetate,
-                            particleColors.na,
-                            particleColors.h,
-                            particleColors.cl,
+                            'rgba(245, 158, 11, 0.7)', // yellow-500
+                            'rgba(16, 185, 129, 0.7)', // green-500
+                            'rgba(168, 85, 247, 0.7)', // purple-500
+                            'rgba(239, 68, 68, 0.7)',  // red-500
+                            'rgba(59, 130, 246, 0.7)', // blue-500
                         ],
-                        // Use border color for bar borders
-                        borderColor: Array(5).fill(hslToRgba(getCssVariable('--border'))),
+                         borderColor: [ // Slightly darker borders
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(168, 85, 247, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(59, 130, 246, 1)',
+                        ],
                         borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                             backgroundColor: hslToRgba(getCssVariable('--popover')),
-                             titleColor: hslToRgba(getCssVariable('--popover-foreground')),
-                             bodyColor: hslToRgba(getCssVariable('--popover-foreground')),
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.raw;
-                                    return value < 0.001 ? `${value.toExponential(3)} M` : `${value.toFixed(4)} M`;
-                                }
-                            }
-                        }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         y: {
                             beginAtZero: true,
                             title: { display: true, text: 'Concentration (M)', color: textColor },
-                            ticks: { color: textColor },
+                            ticks: { color: textColor, callback: function(value) { return value < 0.001 ? value.toExponential(1) : value.toFixed(3); } },
                             grid: { color: gridColor }
                         },
-                        x: {
-                            ticks: { color: textColor },
-                            grid: { color: gridColor }
-                        }
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } }
                     }
                 }
             });
@@ -507,63 +571,42 @@
             if (!phCurveCanvas) return;
             const phCurveCtx = phCurveCanvas.getContext('2d');
             if (!phCurveCtx) return;
-
             phCurveChart = new Chart(phCurveCtx, {
                 type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Buffer Solution',
-                        data: [],
+                data: { labels: [], datasets: [
+                    {
+                        label: 'Buffer Solution', data: [],
                         borderColor: primaryColor,
-                        backgroundColor: primaryColor.replace('rgba', 'rgba').replace(')', ', 0.1)'), // Add alpha
-                        tension: 0.3,
-                        fill: true,
-                        pointBackgroundColor: primaryColor,
-                        pointRadius: 0, // Hide points by default
-                         pointHoverRadius: 4
+                        backgroundColor: primaryColor + '1A', // Add alpha
+                        tension: 0.1, fill: true
                     },
                     {
-                        label: 'Water (No Buffer)',
-                        data: [],
-                        borderColor: redColor,
-                        backgroundColor: redColor.replace('0.7', '0.05'), // Lighter fill
+                        label: 'Water (No Buffer)', data: [],
+                        borderColor: destructiveColor,
+                        backgroundColor: destructiveColor + '1A', // Add alpha
                         borderDash: [5, 5],
-                        tension: 0.3,
-                        fill: true,
-                         pointBackgroundColor: redColor,
-                         pointRadius: 0,
-                         pointHoverRadius: 4
-                    }]
-                },
+                        tension: 0.1, fill: false
+                    }
+                ]},
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { color: textColor } },
-                         tooltip: {
-                             backgroundColor: hslToRgba(getCssVariable('--popover')),
-                             titleColor: hslToRgba(getCssVariable('--popover-foreground')),
-                             bodyColor: hslToRgba(getCssVariable('--popover-foreground')),
-                         }
-                    },
+                    plugins: { legend: { position: 'top', labels: { color: textColor } } },
                     scales: {
                         y: {
                             title: { display: true, text: 'pH', color: textColor },
-                            ticks: { color: textColor },
-                            grid: { color: gridColor }
+                            ticks: { color: textColor }, grid: { color: gridColor }
                         },
                         x: {
                             title: { display: true, text: 'HCl Added (M)', color: textColor },
-                            ticks: { color: textColor, maxRotation: 0, minRotation: 0, autoSkip: true, maxTicksLimit: 6 },
-                            grid: { color: gridColor }
+                            ticks: { color: textColor }, grid: { color: gridColor }
                         }
                     }
                 }
             });
         }
 
-        // Calculate equilibrium concentrations and pH (NO CHANGE NEEDED IN LOGIC)
+        // Calculate equilibrium concentrations and pH (logic unchanged)
         function calculateEquilibrium() {
             const initialAcetic = aceticConc;
             const initialAcetate = acetateConc;
@@ -574,270 +617,226 @@
 
             const finalAcetate = initialAcetate - acetateConsumed;
             const finalAcetic = initialAcetic + acetateConsumed;
-            const finalNa = initialAcetate;
-            const finalCl = initialHCl;
+            const finalNa = initialAcetate; // Na+ concentration unchanged (from NaAcetate)
+            const finalCl = initialHCl;     // All added Cl- remains
 
-            let hConcFromHCl = hclRemaining;
             let hConcFromEquilibrium;
-
-            if (finalAcetate > 1e-9) { // Use small threshold instead of 0
+            if (finalAcetate > 1e-9) { // Avoid division by zero or near-zero
                 hConcFromEquilibrium = KA_ACETIC * (finalAcetic / finalAcetate);
-            } else if (finalAcetic > 1e-9) {
-                // Approximation for weak acid dissociation when base is depleted
-                 // Ka = [H+]^2 / [HA], assume [H+] = x, [HA] = finalAcetic - x ≈ finalAcetic
-                 hConcFromEquilibrium = Math.sqrt(KA_ACETIC * finalAcetic);
-                 // If only strong acid remains, this term should be negligible or zero
-                 if (hclRemaining > 0 && finalAcetic < 1e-9) hConcFromEquilibrium = 0;
             } else {
-                // Only strong acid remaining, or just water
-                hConcFromEquilibrium = (hclRemaining > 0) ? 0 : 1e-7; // H+ from water if nothing else
+                 // If buffer base depleted, H+ is primarily from excess strong acid and some weak acid dissociation
+                 // Approximate: H+ comes mainly from remaining HCl, plus some from HA dissociation
+                let approxHFromHA = (finalAcetic > 1e-9) ? Math.sqrt(KA_ACETIC * finalAcetic) : 0;
+                 hConcFromEquilibrium = approxHFromHA; // H+ from weak acid dissociation
             }
+             // Total H+ is sum from remaining strong acid and the equilibrium concentration
+            const totalHConc = hclRemaining + hConcFromEquilibrium;
 
-            // Total H+ conc, ensuring it's not less than water autoionization contribution
-            const totalHConc = Math.max(hConcFromHCl + hConcFromEquilibrium, 1e-14);
-            const pH = -Math.log10(totalHConc);
+            const pH = totalHConc > 1e-14 ? -Math.log10(totalHConc) : 14; // Handle very low H+
 
             const waterHConc = initialHCl > 1e-9 ? initialHCl : 1e-7;
             const waterPH = -Math.log10(waterHConc);
 
-            const ratio = (finalAcetate > 1e-9 && finalAcetic > 1e-9) ? finalAcetate / finalAcetic : 0;
-            const logRatioTerm = (ratio > 0) ? Math.abs(Math.log10(ratio)) : 10; // Penalize heavily if ratio is zero or invalid
-            const bufferCapacityRatio = 1 - Math.min(logRatioTerm / 2, 1); // Normalize between 0 and 1, max penalty at 100:1 or 1:100 ratio
-
+             // Buffer capacity score (simplified: favors 1:1 ratio and higher total conc)
+            const ratio = (finalAcetic > 1e-9 && finalAcetate > 1e-9) ? finalAcetate / finalAcetic : 0;
+            const idealRatioFactor = Math.exp(-0.5 * Math.pow(Math.log(ratio || 1e-9), 2)); // Gaussian peak at ratio=1
             const totalBufferConcentration = finalAcetic + finalAcetate;
-            const normalizedConcentration = Math.min(totalBufferConcentration / 0.5, 1); // Max capacity boost at 0.5M total
+            // Normalize concentration effect (max effect around 0.5M total)
+            const concentrationFactor = 1 - Math.exp(-5 * totalBufferConcentration);
+            const bufferCapacityScore = idealRatioFactor * concentrationFactor;
 
-            const bufferCapacityScore = bufferCapacityRatio * normalizedConcentration;
-
-
-             // Ensure calculated concentrations aren't negative due to floating point issues
-             const safeFinalAcetic = Math.max(0, finalAcetic);
-             const safeFinalAcetate = Math.max(0, finalAcetate);
 
             return {
-                aceticConc: safeFinalAcetic,
-                acetateConc: safeFinalAcetate,
-                naConc: finalNa,
-                hConc: totalHConc,
-                clConc: finalCl,
-                pH: pH,
-                waterPH: waterPH,
-                bufferCapacityScore: bufferCapacityScore,
-                ratio: ratio // Use original ratio for HH display
+                aceticConc: finalAcetic, acetateConc: finalAcetate, naConc: finalNa,
+                hConc: totalHConc, clConc: finalCl, pH: pH,
+                waterPH: waterPH, bufferCapacityScore: Math.max(0, Math.min(1, bufferCapacityScore)), // Clamp between 0 and 1
+                ratio: ratio
             };
         }
 
-        // Update pH curve data (NO CHANGE NEEDED IN LOGIC)
-        function updatePHCurveData() {
+        // Calculate and update pH curve data (logic unchanged)
+         function updatePHCurveData() {
             const currentAcetic = aceticConc;
             const currentAcetate = acetateConc;
-            const currentHclSliderValue = parseFloat(hclConcentration.value); // Store slider value
-
             const hclPoints = [];
             const bufferPHPoints = [];
             const waterPHPoints = [];
-
             const numPoints = 41; // Increased points for smoother curve
-            const maxHCl = parseFloat(hclConcentration.max); // Use slider max
+            const maxHCl = 0.2;
 
             for (let i = 0; i < numPoints; i++) {
                 const pointHCl = (i / (numPoints - 1)) * maxHCl;
                 hclPoints.push(pointHCl.toFixed(3));
-
-                // Temporarily set hclConc for calculation
-                hclConc = pointHCl;
-                const result = calculateEquilibrium();
-                bufferPHPoints.push(result.pH);
-                waterPHPoints.push(result.waterPH);
+                // Use temporary state for calculation
+                const tempResult = calculateEquilibriumAt(currentAcetic, currentAcetate, pointHCl);
+                bufferPHPoints.push(tempResult.pH);
+                waterPHPoints.push(tempResult.waterPH);
             }
-
-            // Restore actual state
-            hclConc = currentHclSliderValue;
-            aceticConc = currentAcetic;
-            acetateConc = currentAcetate;
-
-            return { labels: hclPoints, bufferPHPoints, waterPHPoints };
+            return { labels: hclPoints, bufferPHPoints: bufferPHPoints, waterPHPoints: waterPHPoints };
         }
 
-        // Update UI
+        // Helper function for curve calculation without modifying global state
+        function calculateEquilibriumAt(initialAcetic, initialAcetate, hclAdded) {
+             // Simplified clone of calculateEquilibrium logic for curve points
+            const acetateConsumed = Math.min(initialAcetate, hclAdded);
+            const hclRemaining = hclAdded - acetateConsumed;
+            const finalAcetate = initialAcetate - acetateConsumed;
+            const finalAcetic = initialAcetic + acetateConsumed;
+
+            let hConcFromEquilibrium;
+            if (finalAcetate > 1e-9) {
+                hConcFromEquilibrium = KA_ACETIC * (finalAcetic / finalAcetate);
+            } else {
+                 let approxHFromHA = (finalAcetic > 1e-9) ? Math.sqrt(KA_ACETIC * finalAcetic) : 0;
+                 hConcFromEquilibrium = approxHFromHA;
+            }
+            const totalHConc = hclRemaining + hConcFromEquilibrium;
+            const pH = totalHConc > 1e-14 ? -Math.log10(totalHConc) : 14;
+            const waterHConc = hclAdded > 1e-9 ? hclAdded : 1e-7;
+            const waterPH = -Math.log10(waterHConc);
+            return { pH, waterPH };
+        }
+
+
+        // Update the UI with calculation results
         function updateUI() {
             const result = calculateEquilibrium();
 
+            // Update pH values
             if (hclConc === 0) {
                 initialPHValue = result.pH;
                 initialPh.textContent = result.pH.toFixed(2);
             }
-
             currentPh.textContent = result.pH.toFixed(2);
             const pHChangeValue = result.pH - initialPHValue;
             phChange.textContent = pHChangeValue.toFixed(2);
 
-            // Update HH equation display
-            if (result.acetateConc > 1e-9 && result.aceticConc > 1e-9) {
-                 const displayAcetate = result.acetateConc.toFixed(3);
-                 const displayAcetic = result.aceticConc.toFixed(3);
-                 hhEquationValues.textContent = `${result.pH.toFixed(2)} = ${PKA_ACETIC.toFixed(2)} + log(${displayAcetate}/${displayAcetic})`;
-             } else if (result.acetateConc <= 1e-9 && result.aceticConc > 1e-9) {
-                 hhEquationValues.textContent = "pH dominated by remaining acid";
-             } else if (result.hclConc > result.acetateConc && result.acetateConc > 1e-9) {
-                 hhEquationValues.textContent = "pH dominated by excess HCl";
+            // Update Henderson-Hasselbalch
+             if (result.acetateConc > 1e-9 && result.aceticConc > 1e-9) {
+                hhEquationValues.textContent = `${result.pH.toFixed(2)} = ${PKA_ACETIC.toFixed(2)} + log(${result.acetateConc.toFixed(3)}/${result.aceticConc.toFixed(3)})`;
+            } else if (result.acetateConc <= 1e-9 && hclConc > 0) {
+                 hhEquationValues.textContent = "Buffer base depleted";
+             } else if (result.aceticConc <= 1e-9) {
+                 hhEquationValues.textContent = "Buffer acid depleted";
              } else {
-                 hhEquationValues.textContent = "Buffer exhausted or undefined ratio";
+                 hhEquationValues.textContent = "Calculation Details"; // Fallback
              }
 
-            bufferCapacityBar.style.width = `${Math.max(0, Math.min(100, result.bufferCapacityScore * 100))}%`;
+            // Update buffer capacity progress bar
+             // bufferCapacityProgress is the indicator div now
+            bufferCapacityProgress.style.width = `${result.bufferCapacityScore * 100}%`;
 
 
-            // Update charts only if they exist
-             if (concentrationChart && concentrationChart.data) {
-                 concentrationChart.data.datasets[0].data = [
-                     result.aceticConc,
-                     result.acetateConc,
-                     result.naConc,
-                     result.hConc,
-                     result.clConc
-                 ];
-                  // Update colors based on current theme potentially? No, keep particle colors fixed.
-                 concentrationChart.update('none'); // Use 'none' to prevent animation flicker on slider drag
-             }
+            // Update concentration chart
+            if (concentrationChart) {
+                concentrationChart.data.datasets[0].data = [
+                    result.aceticConc, result.acetateConc, result.naConc, result.hConc, result.clConc
+                ];
+                concentrationChart.update('none'); // 'none' prevents animation flicker
+            }
 
-             if (phCurveChart && phCurveChart.data) {
-                 const curveData = updatePHCurveData();
-                 phCurveChart.data.labels = curveData.labels;
-                 phCurveChart.data.datasets[0].data = curveData.bufferPHPoints;
-                 phCurveChart.data.datasets[1].data = curveData.waterPHPoints;
-                 // Update colors based on theme
-                 const primaryColor = hslToRgba(getCssVariable('--primary'));
-                 phCurveChart.data.datasets[0].borderColor = primaryColor;
-                 phCurveChart.data.datasets[0].backgroundColor = primaryColor.replace('rgba', 'rgba').replace(')', ', 0.1)');
-                 phCurveChart.data.datasets[0].pointBackgroundColor = primaryColor;
-                 phCurveChart.options.scales.y.ticks.color = hslToRgba(getCssVariable('--foreground'));
-                 phCurveChart.options.scales.x.ticks.color = hslToRgba(getCssVariable('--foreground'));
-                 phCurveChart.options.scales.y.grid.color = hslToRgba(getCssVariable('--border'), 0.5);
-                 phCurveChart.options.scales.x.grid.color = hslToRgba(getCssVariable('--border'), 0.5);
-                 phCurveChart.options.plugins.legend.labels.color = hslToRgba(getCssVariable('--foreground'));
+            // Update pH curve chart
+            if (phCurveChart) {
+                const curveData = updatePHCurveData();
+                phCurveChart.data.labels = curveData.labels;
+                phCurveChart.data.datasets[0].data = curveData.bufferPHPoints;
+                phCurveChart.data.datasets[1].data = curveData.waterPHPoints;
+                phCurveChart.update('none'); // 'none' prevents animation flicker
+            }
 
-                 phCurveChart.update('none'); // Use 'none' to prevent animation flicker
-             }
+            // Update visualization
+            updateVisualization(result);
 
-            updateVisualization(result); // Update particles
+             // Update slider visuals
+            updateSliderVisual(aceticConcentration, aceticRange, aceticThumb);
+            updateSliderVisual(acetateConcentration, acetateRange, acetateThumb);
+            updateSliderVisual(hclConcentration, hclRange, hclThumb);
+
             return result;
         }
 
-        // Visualization (NO CHANGE NEEDED IN LOGIC, but adjusted createParticle)
+        // Create and manage particles for visualization (logic unchanged)
         function updateVisualization(result) {
+             if (animationFrame) cancelAnimationFrame(animationFrame); // Stop previous animation
             visualization.innerHTML = '';
             particles = [];
-            if (animationFrame) {
-                cancelAnimationFrame(animationFrame); // Stop previous animation
-            }
+            const maxParticles = 250; // Increased slightly
+            const scaleFactor = 1 / Math.max(result.aceticConc, result.acetateConc, result.naConc, result.hConc, result.clConc, 1e-9); // Avoid division by zero
 
-            const maxParticles = 250; // Slightly more particles
-            const totalConc = result.aceticConc + result.acetateConc + result.naConc + result.hConc + result.clConc;
+            let numAcetic = Math.round(result.aceticConc * scaleFactor * 50); // Base scaling
+            let numAcetate = Math.round(result.acetateConc * scaleFactor * 50);
+            let numNa = Math.round(result.naConc * scaleFactor * 50);
+            // Scale H+ and Cl- differently as their relative amounts can vary hugely
+            let numH = Math.max(1, Math.min(50, Math.round(result.hConc * scaleFactor * 50 + Math.log10(result.hConc / 1e-7) * 5))); // Log scale for visibility
+            let numCl = Math.max(0, Math.min(50, Math.round(result.clConc * scaleFactor * 50)));
 
-            // Avoid division by zero if total concentration is near zero
-            if (totalConc < 1e-9) {
-                animateParticles(); // Start animation loop even if empty
-                return;
-            }
+             // Normalize to maxParticles if total exceeds limit
+             const totalCalculated = numAcetic + numAcetate + numNa + numH + numCl;
+             if (totalCalculated > maxParticles) {
+                 const normFactor = maxParticles / totalCalculated;
+                 numAcetic = Math.round(numAcetic * normFactor);
+                 numAcetate = Math.round(numAcetate * normFactor);
+                 numNa = Math.round(numNa * normFactor);
+                 numH = Math.round(numH * normFactor);
+                 numCl = Math.round(numCl * normFactor);
+             }
 
-             // Calculate particle counts, ensuring minimum 1 if concentration > 0
-             let numAcetic = result.aceticConc > 1e-9 ? Math.max(1, Math.round((result.aceticConc / totalConc) * maxParticles)) : 0;
-             let numAcetate = result.acetateConc > 1e-9 ? Math.max(1, Math.round((result.acetateConc / totalConc) * maxParticles)) : 0;
-             let numNa = result.naConc > 1e-9 ? Math.max(1, Math.round((result.naConc / totalConc) * maxParticles)) : 0;
-             let numH = result.hConc > 1e-9 ? Math.max(1, Math.round((result.hConc / totalConc) * maxParticles)) : 0;
-             let numCl = result.clConc > 1e-9 ? Math.max(1, Math.round((result.clConc / totalConc) * maxParticles)) : 0;
+            // Ensure minimum visibility if concentration > 0
+            if (result.aceticConc > 1e-9 && numAcetic === 0) numAcetic = 1;
+            if (result.acetateConc > 1e-9 && numAcetate === 0) numAcetate = 1;
+            if (result.naConc > 1e-9 && numNa === 0) numNa = 1;
+            if (result.hConc > 1e-9 && numH === 0) numH = 1;
+            if (result.clConc > 1e-9 && numCl === 0) numCl = 1;
 
-             // Particle colors mapping (using fixed colors for clarity)
-             const colors = {
-                 acetic: 'bg-yellow-500', acetate: 'bg-green-500', na: 'bg-purple-500', h: 'bg-red-500', cl: 'bg-blue-500'
-             };
 
-             // Create particles
-             for (let i = 0; i < numAcetic; i++) createParticle('acetic', colors.acetic);
-             for (let i = 0; i < numAcetate; i++) createParticle('acetate', colors.acetate);
-             for (let i = 0; i < numNa; i++) createParticle('na', colors.na);
-             for (let i = 0; i < numH; i++) createParticle('h', colors.h);
-             for (let i = 0; i < numCl; i++) createParticle('cl', colors.cl);
+            for (let i = 0; i < numAcetic; i++) createParticle('acetic', 'yellow-500', '10px');
+            for (let i = 0; i < numAcetate; i++) createParticle('acetate', 'green-500', '9px');
+            for (let i = 0; i < numNa; i++) createParticle('na', 'purple-500', '7px');
+            for (let i = 0; i < numH; i++) createParticle('h', 'red-500', '4px');
+            for (let i = 0; i < numCl; i++) createParticle('cl', 'blue-500', '7px');
 
             animateParticles();
         }
 
-        function createParticle(type, colorClass) {
+        function createParticle(type, colorClass, size) {
             const particle = document.createElement('div');
-            let size = '6px'; // Default size
-            if (type === 'acetic') size = '10px';
-            else if (type === 'acetate') size = '9px';
-            else if (type === 'na' || type === 'cl') size = '7px';
-            else if (type === 'h') size = '4px';
-
-             // Use Tailwind classes for styling
-            particle.className = `absolute rounded-full ${colorClass} shadow-sm`;
+            particle.className = `absolute rounded-full bg-${colorClass} opacity-80`; // Added opacity
             particle.style.width = size;
             particle.style.height = size;
-            particle.style.willChange = 'transform'; // Optimize for animation
-
-            const visRect = visualization.getBoundingClientRect();
-             // Ensure width/height are available, provide fallback
-             const visWidth = visRect.width || 300;
-             const visHeight = visRect.height || 256;
-
-             // Calculate max position ensuring particle stays within bounds based on its size
-             const pSize = parseFloat(size);
-             const maxX = visWidth - pSize;
-             const maxY = visHeight - pSize;
-
-             // Initial position in pixels, constrained within bounds
-             const x = Math.random() * maxX;
-             const y = Math.random() * maxY;
-
-            particle.style.transform = `translate(${x}px, ${y}px)`; // Use transform for better performance
-
+            const x = Math.random() * 98 + 1; // Keep away from exact edges
+            const y = Math.random() * 98 + 1;
+            particle.style.left = `${x}%`;
+            particle.style.top = `${y}%`;
             visualization.appendChild(particle);
-
-            particles.push({
-                element: particle,
-                x: x, y: y,
-                // Slower speeds
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-                size: pSize, // Store size in pixels
-                type: type
-            });
+            particles.push({ element: particle, x: x, y: y, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6 }); // Slightly slower
         }
-
 
         function animateParticles() {
-            const visRect = visualization.getBoundingClientRect();
-            const visWidth = visRect.width || 300;
-            const visHeight = visRect.height || 256;
-
             function updatePositions() {
+                const bounds = visualization.getBoundingClientRect();
                 particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
+                    p.x += p.vx; p.y += p.vy;
+                    // More robust boundary check
+                    const particleSizePx = parseFloat(p.element.style.width);
+                    const boundaryPaddingPercent = (particleSizePx / bounds.width) * 100 / 2; // Adjust based on particle size
 
-                    // Bounce off walls, considering particle size
-                    if (p.x <= 0) { p.x = 0; p.vx *= -1; }
-                    if (p.x >= visWidth - p.size) { p.x = visWidth - p.size; p.vx *= -1; }
-                    if (p.y <= 0) { p.y = 0; p.vy *= -1; }
-                    if (p.y >= visHeight - p.size) { p.y = visHeight - p.size; p.vy *= -1; }
+                    if (p.x <= boundaryPaddingPercent || p.x >= 100 - boundaryPaddingPercent) p.vx *= -1;
+                    if (p.y <= boundaryPaddingPercent || p.y >= 100 - boundaryPaddingPercent) p.vy *= -1;
+                     // Clamp position to prevent sticking
+                     p.x = Math.max(boundaryPaddingPercent, Math.min(100 - boundaryPaddingPercent, p.x));
+                     p.y = Math.max(boundaryPaddingPercent, Math.min(100 - boundaryPaddingPercent, p.y));
 
-                    // Apply position using transform
-                    p.element.style.transform = `translate(${p.x}px, ${p.y}px)`;
+                    p.element.style.transform = `translate(${p.x.toFixed(2)}%, ${p.y.toFixed(2)}%)`; // Use transform for better performance
+                     p.element.style.left = '0%'; // Base position is top-left
+                     p.element.style.top = '0%';
                 });
-
                 animationFrame = requestAnimationFrame(updatePositions);
             }
-
-            // Cancel existing animation frame before starting a new one
-            if (animationFrame) {
-                cancelAnimationFrame(animationFrame);
-            }
-            animationFrame = requestAnimationFrame(updatePositions);
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+             animationFrame = requestAnimationFrame(updatePositions);
         }
 
-        // Initialize Simulation
+        // Initialize the simulation
         function initSimulation() {
             initCharts();
             aceticConc = parseFloat(aceticConcentration.value);
@@ -847,9 +846,11 @@
             acetateValue.textContent = acetateConc.toFixed(3);
             hclValue.textContent = hclConc.toFixed(3);
             kaValue.textContent = KA_ACETIC.toExponential(1).replace('e-', ' × 10⁻');
-            const result = updateUI(); // Initial calculation and UI update
-            initialPHValue = result.pH; // Set initial pH based on initial state
-            initialPh.textContent = initialPHValue.toFixed(2); // Ensure initial pH displays correctly
+
+            const result = updateUI(); // Initial UI update includes slider visuals
+            initialPHValue = result.pH;
+            initialPh.textContent = initialPHValue.toFixed(2); // Set initial pH explicitly
+
         }
 
         // Event Listeners
@@ -872,33 +873,29 @@
         });
 
         resetBtn.addEventListener('click', () => {
-             aceticConcentration.value = 0.1;
-             acetateConcentration.value = 0.1;
-             hclConcentration.value = 0;
-
-             // Trigger input events to update state and UI correctly
-             aceticConcentration.dispatchEvent(new Event('input', { bubbles:true }));
-             acetateConcentration.dispatchEvent(new Event('input', { bubbles:true }));
-             hclConcentration.dispatchEvent(new Event('input', { bubbles:true }));
-
-             // Recalculate and ensure initial pH is reset correctly
-             const result = calculateEquilibrium(); // Perform calculation with reset values
-             initialPHValue = result.pH; // Set the baseline pH again
-             updateUI(); // Update the entire UI
-             initialPh.textContent = initialPHValue.toFixed(2); // Explicitly set initial pH display
+            aceticConcentration.value = 0.1;
+            acetateConcentration.value = 0.1;
+            hclConcentration.value = 0;
+            aceticConc = 0.1; acetateConc = 0.1; hclConc = 0;
+            aceticValue.textContent = aceticConc.toFixed(3);
+            acetateValue.textContent = acetateConc.toFixed(3);
+            hclValue.textContent = hclConc.toFixed(3);
+            const result = updateUI();
+            initialPHValue = result.pH;
+             initialPh.textContent = initialPHValue.toFixed(2); // Ensure initial pH resets visually
              currentPh.textContent = initialPHValue.toFixed(2);
              phChange.textContent = "0.00";
         });
 
-         // Re-initialize charts on window resize potentially (optional)
-         let resizeTimer;
-         window.addEventListener('resize', () => {
-             clearTimeout(resizeTimer);
-             resizeTimer = setTimeout(() => {
-                 // Could re-init charts here if needed, but Chart.js responsive should handle most cases
-                 // updateUI(); // Redraw visualization if needed after resize
-             }, 250);
-         });
+        // Handle dark mode changes for chart re-styling
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            applyDarkModePreference(); // Apply dark class
+            // Short delay to allow CSS variables to update before redrawing charts
+            setTimeout(() => {
+                initCharts(); // Re-initialize charts with new theme colors
+                updateUI();   // Redraw UI elements
+            }, 50);
+        });
 
         // Initialize after DOM is ready
         document.addEventListener('DOMContentLoaded', initSimulation);
