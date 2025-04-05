@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acetic Acid/Sodium Acetate Buffer Simulation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        'primary-dark': '#4F4EC4',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <h1 class="text-3xl font-bold text-center mb-4 text-primary dark:text-primary">Acetic Acid/Sodium Acetate Buffer Simulation</h1>
+        <p class="text-center mb-8">Demonstrating buffer action when HCl is added to the system</p>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Controls Panel -->
+            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Buffer Components</h2>
+                
+                <!-- Acetic Acid Concentration -->
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium" for="acetic-concentration">
+                        Acetic Acid Concentration (M):
+                        <span id="acetic-value" class="ml-2 font-bold">0.100</span>
+                    </label>
+                    <input type="range" id="acetic-concentration" min="0.01" max="0.5" step="0.01" value="0.1" 
+                        class="w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                </div>
+                
+                <!-- Sodium Acetate Concentration -->
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium" for="acetate-concentration">
+                        Sodium Acetate Concentration (M):
+                        <span id="acetate-value" class="ml-2 font-bold">0.100</span>
+                    </label>
+                    <input type="range" id="acetate-concentration" min="0.01" max="0.5" step="0.01" value="0.1" 
+                        class="w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                </div>
+                
+                <!-- HCl Addition -->
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium" for="hcl-concentration">
+                        HCl Added (M):
+                        <span id="hcl-value" class="ml-2 font-bold">0.000</span>
+                    </label>
+                    <input type="range" id="hcl-concentration" min="0" max="0.2" step="0.001" value="0" 
+                        class="w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                </div>
+                
+                <!-- Ka Value -->
+                <div class="flex items-center mb-6">
+                    <span class="font-medium">Ka of Acetic Acid:</span>
+                    <span id="ka-value" class="ml-2 font-mono">1.8 × 10⁻⁵</span>
+                    <span class="ml-2 font-medium">(pKa = 4.74)</span>
+                </div>
+                
+                <div class="mb-6">
+                    <button id="reset-btn" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md transition-colors">
+                        Reset Simulation
+                    </button>
+                </div>
+            </div>
+            
+            <!-- pH and Buffer Capacity Panel -->
+            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow-md">
+                <h2 class="text-xl font-semibold mb-4">pH and Buffer Capacity</h2>
+                
+                <!-- pH Values -->
+                <div class="mb-6 grid grid-cols-2 gap-4">
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-md">
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Initial pH</h3>
+                        <p id="initial-ph" class="text-2xl font-bold">4.74</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-md">
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Current pH</h3>
+                        <p id="current-ph" class="text-2xl font-bold">4.74</p>
+                    </div>
+                </div>
+                
+                <!-- Buffer Capacity Gauge -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Buffer Capacity</h3>
+                    <div class="h-6 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="buffer-capacity-bar" class="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 transition-all duration-300" style="width: 50%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1">
+                        <span>Low</span>
+                        <span>Medium</span>
+                        <span>High</span>
+                    </div>
+                </div>
+                
+                <!-- pH Change Info -->
+                <div class="bg-white dark:bg-gray-700 p-3 rounded-md mb-4">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">pH Change with HCl</h3>
+                    <p id="ph-change" class="text-xl font-bold">0.00</p>
+                </div>
+                
+                <!-- Henderson-Hasselbalch Equation -->
+                <div class="p-3 border dark:border-gray-600 rounded-md bg-white/50 dark:bg-gray-700/50">
+                    <h3 class="text-sm font-medium mb-2">Henderson-Hasselbalch Equation:</h3>
+                    <p class="font-mono text-center">pH = pKa + log([CH₃COO⁻]/[CH₃COOH])</p>
+                    <p id="hh-equation-values" class="font-mono text-center mt-2">4.74 = 4.74 + log(0.1/0.1)</p>
+                </div>
+            </div>
+            
+            <!-- Visualization & Charts -->
+            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Concentration Changes</h2>
+                
+                <!-- Concentration Chart -->
+                <div class="w-full h-60 mb-4">
+                    <canvas id="concentration-chart"></canvas>
+                </div>
+                
+                <!-- pH vs HCl Chart -->
+                <h3 class="text-md font-medium mt-4 mb-2">Buffer Action: pH vs HCl Added</h3>
+                <div class="w-full h-40">
+                    <canvas id="ph-curve-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Molecular Visualization -->
+        <div class="mt-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Molecular Visualization</h2>
+            <div id="visualization" class="border dark:border-gray-600 rounded-md h-64 relative overflow-hidden bg-blue-50 dark:bg-blue-900/30">
+                <!-- Particles will be added here by JS -->
+            </div>
+            
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
+                <div class="flex items-center">
+                    <span class="w-4 h-4 rounded-full bg-yellow-500 inline-block mr-2"></span>
+                    <span>CH₃COOH (Acetic Acid)</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-4 h-4 rounded-full bg-green-500 inline-block mr-2"></span>
+                    <span>CH₃COO⁻ (Acetate Ion)</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-4 h-4 rounded-full bg-purple-500 inline-block mr-2"></span>
+                    <span>Na⁺ (Sodium Ion)</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-4 h-4 rounded-full bg-red-500 inline-block mr-2"></span>
+                    <span>H⁺ (Hydrogen Ion)</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-4 h-4 rounded-full bg-blue-500 inline-block mr-2"></span>
+                    <span>Cl⁻ (Chloride Ion)</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Explanation -->
+        <div class="mt-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-6 shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Understanding Buffer Action</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-medium mb-2">How This Buffer Works</h3>
+                    <p class="mb-3">
+                        A buffer is a solution that resists changes in pH when small amounts of acid or base are added. The acetic acid/sodium acetate buffer works through the following equilibrium:
+                    </p>
+                    <p class="text-center mb-3 font-mono">
+                        CH₃COOH(aq) ⇌ CH₃COO⁻(aq) + H⁺(aq)
+                    </p>
+                    <p class="mb-3">
+                        When HCl is added, it dissociates completely:
+                    </p>
+                    <p class="text-center mb-3 font-mono">
+                        HCl(aq) → H⁺(aq) + Cl⁻(aq)
+                    </p>
+                    <p>
+                        The excess H⁺ ions react with acetate ions (CH₃COO⁻) to form acetic acid (CH₃COOH), minimizing the change in pH. This is the buffer action.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-medium mb-2">Buffer Capacity Factors</h3>
+                    <ul class="list-disc list-inside">
+                        <li class="mb-2">Buffer capacity is highest when the concentration of acetic acid equals the concentration of acetate (ratio ≈ 1:1)</li>
+                        <li class="mb-2">Buffer capacity increases with higher total concentrations of buffer components</li>
+                        <li class="mb-2">A buffer is most effective when pH is within ±1 unit of the pKa (in this case, 3.74-5.74)</li>
+                        <li class="mb-2">The buffer will eventually be overwhelmed if too much acid is added</li>
+                        <li>The Henderson-Hasselbalch equation describes the relationship between pH, pKa, and the concentrations of conjugate acid and base</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize dark mode based on user preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // DOM elements
+        const aceticConcentration = document.getElementById('acetic-concentration');
+        const aceticValue = document.getElementById('acetic-value');
+        const acetateConcentration = document.getElementById('acetate-concentration');
+        const acetateValue = document.getElementById('acetate-value');
+        const hclConcentration = document.getElementById('hcl-concentration');
+        const hclValue = document.getElementById('hcl-value');
+        const kaValue = document.getElementById('ka-value');
+        const initialPh = document.getElementById('initial-ph');
+        const currentPh = document.getElementById('current-ph');
+        const phChange = document.getElementById('ph-change');
+        const hhEquationValues = document.getElementById('hh-equation-values');
+        const bufferCapacityBar = document.getElementById('buffer-capacity-bar');
+        const resetBtn = document.getElementById('reset-btn');
+        const visualization = document.getElementById('visualization');
+        
+        // Charts
+        let concentrationChart = null;
+        let phCurveChart = null;
+        
+        // Constants
+        const KA_ACETIC = 1.8e-5;  // Ka of acetic acid
+        const PKA_ACETIC = -Math.log10(KA_ACETIC); // pKa of acetic acid
+        
+        // State variables
+        let aceticConc = parseFloat(aceticConcentration.value);
+        let acetateConc = parseFloat(acetateConcentration.value);
+        let hclConc = parseFloat(hclConcentration.value);
+        let initialPHValue = 0;
+        let phCurveData = [];
+        let particles = [];
+        
+        // Initialize Charts
+        function initCharts() {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const textColor = isDarkMode ? '#e5e7eb' : '#1f2937';
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            
+            // Concentration chart - first ensure the canvas context is valid
+            const concentrationCanvas = document.getElementById('concentration-chart');
+            if (!concentrationCanvas) {
+                console.error("Concentration chart canvas not found");
+                return;
+            }
+            const concentrationCtx = concentrationCanvas.getContext('2d');
+            if (!concentrationCtx) {
+                console.error("Could not get 2D context for concentration chart");
+                return;
+            }
+            concentrationChart = new Chart(concentrationCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['CH₃COOH', 'CH₃COO⁻', 'Na⁺', 'H⁺', 'Cl⁻'],
+                    datasets: [{
+                        label: 'Concentration (M)',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(245, 158, 11, 0.7)',  // yellow-500 - Acetic acid
+                            'rgba(16, 185, 129, 0.7)',  // green-500 - Acetate
+                            'rgba(168, 85, 247, 0.7)',  // purple-500 - Sodium
+                            'rgba(239, 68, 68, 0.7)',   // red-500 - Hydrogen
+                            'rgba(59, 130, 246, 0.7)',  // blue-500 - Chloride
+                        ],
+                        borderColor: [
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(168, 85, 247, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(59, 130, 246, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    if (value < 0.001) {
+                                        return `${value.toExponential(3)} M`;
+                                    } else {
+                                        return `${value.toFixed(4)} M`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Concentration (M)',
+                                color: textColor
+                            },
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // pH Curve chart - ensure canvas context is valid
+            const phCurveCanvas = document.getElementById('ph-curve-chart');
+            if (!phCurveCanvas) {
+                console.error("pH curve chart canvas not found");
+                return;
+            }
+            const phCurveCtx = phCurveCanvas.getContext('2d');
+            if (!phCurveCtx) {
+                console.error("Could not get 2D context for pH curve chart");
+                return;
+            }
+            phCurveChart = new Chart(phCurveCtx, {
+                type: 'line',
+                data: {
+                    labels: [], // Will be filled with HCl concentrations
+                    datasets: [{
+                        label: 'Buffer Solution',
+                        data: [], // Will be filled with pH values
+                        borderColor: 'rgba(93, 92, 222, 1)', // primary color
+                        backgroundColor: 'rgba(93, 92, 222, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Water (No Buffer)',
+                        data: [], // Will be filled with pH values for water with same HCl
+                        borderColor: 'rgba(239, 68, 68, 0.7)', // red
+                        backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: textColor
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'pH',
+                                color: textColor
+                            },
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'HCl Added (M)',
+                                color: textColor
+                            },
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Calculate equilibrium concentrations and pH
+        function calculateEquilibrium() {
+            // Initial concentrations
+            const initialAcetic = aceticConc;
+            const initialAcetate = acetateConc;
+            const initialHCl = hclConc;
+            
+            // When HCl is added, it primarily reacts with acetate to form acetic acid
+            // HCl + NaCH₃COO → NaCl + CH₃COOH
+            
+            // First, calculate how much acetate reacts with HCl
+            const acetateConsumed = Math.min(initialAcetate, initialHCl);
+            const hclRemaining = initialHCl - acetateConsumed;
+            
+            // Update the concentrations after the reaction
+            const finalAcetate = initialAcetate - acetateConsumed;
+            const finalAcetic = initialAcetic + acetateConsumed;
+            const finalNa = initialAcetate; // Na+ concentration unchanged
+            const finalCl = initialHCl;     // All added Cl- remains in solution
+            
+            // Calculate H+ concentration from remaining HCl and acetic acid equilibrium
+            let hConcFromHCl = hclRemaining; // H+ from remaining HCl (if any)
+            
+            // If there's still acetate left, calculate H+ from acetic acid equilibrium
+            // Ka = [H+][CH₃COO-]/[CH₃COOH]
+            // [H+] = Ka * [CH₃COOH]/[CH₃COO-]
+            let hConcFromEquilibrium;
+            
+            if (finalAcetate > 0) {
+                hConcFromEquilibrium = KA_ACETIC * (finalAcetic / finalAcetate);
+            } else {
+                // If no acetate left, need to solve for [H+] from dissociation of excess acetic acid
+                // This becomes a quadratic equation, but simplify for this simulation
+                hConcFromEquilibrium = Math.sqrt(KA_ACETIC * finalAcetic);
+            }
+            
+            // Total H+ concentration is sum of both sources
+            const totalHConc = hConcFromHCl + hConcFromEquilibrium;
+            
+            // Calculate pH
+            const pH = -Math.log10(totalHConc);
+            
+            // Calculate pH of water with the same amount of HCl (for comparison)
+            // For water pH, we simply use the HCl concentration (or 10^-7 if no HCl)
+            const waterHConc = initialHCl > 0 ? initialHCl : 1e-7;
+            const waterPH = -Math.log10(waterHConc);
+            
+            // Calculate buffer capacity
+            // Buffer capacity is highest when [acid] ≈ [base]
+            // Normalized ratio between 0 and 1 (1 being perfect 1:1 ratio)
+            const ratio = finalAcetate / finalAcetic;
+            const bufferCapacity = 1 - Math.abs(Math.log10(ratio) / 2);
+            
+            // For buffer capacity, also consider total concentration
+            const totalBufferConcentration = finalAcetic + finalAcetate;
+            const normalizedConcentration = Math.min(totalBufferConcentration / 0.5, 1); // Normalize to max 0.5M
+            
+            // Combined buffer capacity score (0-1)
+            const bufferCapacityScore = bufferCapacity * normalizedConcentration;
+            
+            return {
+                aceticConc: finalAcetic,
+                acetateConc: finalAcetate,
+                naConc: finalNa,
+                hConc: totalHConc,
+                clConc: finalCl,
+                pH: pH,
+                waterPH: waterPH,
+                bufferCapacityScore: bufferCapacityScore,
+                ratio: ratio
+            };
+        }
+        
+        // Calculate and update pH curve data for the chart
+        function updatePHCurveData() {
+            // Store the current acetic acid and acetate concentrations
+            const currentAcetic = aceticConc;
+            const currentAcetate = acetateConc;
+            
+            // Generate data points for the pH curve
+            const hclPoints = [];
+            const bufferPHPoints = [];
+            const waterPHPoints = [];
+            
+            // Use 20 points for a smooth curve
+            const numPoints = 20;
+            const maxHCl = 0.2; // Maximum HCl to calculate for (matching slider max)
+            
+            for (let i = 0; i < numPoints; i++) {
+                const pointHCl = (i / (numPoints - 1)) * maxHCl;
+                hclPoints.push(pointHCl.toFixed(3));
+                
+                // Temporarily set HCl concentration to calculate pH at this point
+                hclConc = pointHCl;
+                const result = calculateEquilibrium();
+                bufferPHPoints.push(result.pH);
+                waterPHPoints.push(result.waterPH);
+            }
+            
+            // Restore the actual HCl concentration
+            hclConc = parseFloat(hclConcentration.value);
+            
+            // Restore the original acetic acid and acetate concentrations
+            aceticConc = currentAcetic;
+            acetateConc = currentAcetate;
+            
+            // Return data for chart
+            return {
+                labels: hclPoints,
+                bufferPHPoints: bufferPHPoints,
+                waterPHPoints: waterPHPoints
+            };
+        }
+        
+        // Update the UI with calculation results
+        function updateUI() {
+            const result = calculateEquilibrium();
+            
+            // Update pH values
+            if (hclConc === 0) {
+                initialPHValue = result.pH;
+                initialPh.textContent = result.pH.toFixed(2);
+            }
+            
+            currentPh.textContent = result.pH.toFixed(2);
+            
+            // Calculate pH change
+            const pHChangeValue = result.pH - initialPHValue;
+            phChange.textContent = pHChangeValue.toFixed(2);
+            
+            // Update Henderson-Hasselbalch equation values
+            if (result.acetateConc > 0) {
+                const logRatio = Math.log10(result.acetateConc / result.aceticConc);
+                hhEquationValues.textContent = `${result.pH.toFixed(2)} = ${PKA_ACETIC.toFixed(2)} + log(${result.acetateConc.toFixed(3)}/${result.aceticConc.toFixed(3)})`;
+            } else {
+                hhEquationValues.textContent = "Buffer depleted - H-H equation no longer applies";
+            }
+            
+            // Update buffer capacity bar
+            bufferCapacityBar.style.width = `${result.bufferCapacityScore * 100}%`;
+            
+            // Update concentration chart if it exists
+            if (concentrationChart) {
+                concentrationChart.data.datasets[0].data = [
+                    result.aceticConc,
+                    result.acetateConc,
+                    result.naConc,
+                    result.hConc,
+                    result.clConc
+                ];
+                concentrationChart.update();
+            }
+            
+            // Update pH curve chart if it exists
+            if (phCurveChart) {
+                const curveData = updatePHCurveData();
+                phCurveChart.data.labels = curveData.labels;
+                phCurveChart.data.datasets[0].data = curveData.bufferPHPoints;
+                phCurveChart.data.datasets[1].data = curveData.waterPHPoints;
+                phCurveChart.update();
+            }
+            
+            // Update visualization
+            updateVisualization(result);
+            
+            return result;
+        }
+        
+        // Create and manage particles for visualization
+        function updateVisualization(result) {
+            // Clear existing particles
+            visualization.innerHTML = '';
+            particles = [];
+            
+            // Scale factor to make visualization work with small concentrations
+            const maxParticles = 200; // Maximum total particles to show
+            
+            // Calculate number of each particle type based on relative concentrations
+            const total = result.aceticConc + result.acetateConc + result.naConc + result.hConc + result.clConc;
+            let numAcetic = Math.round((result.aceticConc / total) * maxParticles);
+            let numAcetate = Math.round((result.acetateConc / total) * maxParticles);
+            let numNa = Math.round((result.naConc / total) * maxParticles);
+            let numH = Math.round((result.hConc / total) * maxParticles);
+            let numCl = Math.round((result.clConc / total) * maxParticles);
+            
+            // Ensure at least one particle of each type if concentration > 0
+            if (result.aceticConc > 0 && numAcetic === 0) numAcetic = 1;
+            if (result.acetateConc > 0 && numAcetate === 0) numAcetate = 1;
+            if (result.naConc > 0 && numNa === 0) numNa = 1;
+            if (result.hConc > 0 && numH === 0) numH = 1;
+            if (result.clConc > 0 && numCl === 0) numCl = 1;
+            
+            // Create particles
+            for (let i = 0; i < numAcetic; i++) {
+                createParticle('acetic', 'yellow-500');
+            }
+            for (let i = 0; i < numAcetate; i++) {
+                createParticle('acetate', 'green-500');
+            }
+            for (let i = 0; i < numNa; i++) {
+                createParticle('na', 'purple-500');
+            }
+            for (let i = 0; i < numH; i++) {
+                createParticle('h', 'red-500');
+            }
+            for (let i = 0; i < numCl; i++) {
+                createParticle('cl', 'blue-500');
+            }
+            
+            // Start animation
+            animateParticles();
+        }
+        
+        // Create a single particle
+        function createParticle(type, colorClass) {
+            const particle = document.createElement('div');
+            
+            // Adjust size based on particle type
+            let size = '6px';
+            if (type === 'acetic') {
+                size = '10px'; // Larger for acetic acid molecules
+            } else if (type === 'acetate') {
+                size = '9px'; // Larger for acetate ions
+            } else if (type === 'na') {
+                size = '7px'; // Medium for Na+ ions
+            } else if (type === 'h') {
+                size = '4px'; // Small for H+ ions
+            } else if (type === 'cl') {
+                size = '7px'; // Medium for Cl- ions
+            }
+            
+            particle.className = `absolute rounded-full bg-${colorClass} transition-all duration-200`;
+            particle.style.width = size;
+            particle.style.height = size;
+            
+            // Random position
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            
+            particle.style.left = `${x}%`;
+            particle.style.top = `${y}%`;
+            
+            visualization.appendChild(particle);
+            
+            // Store particle data for animation
+            particles.push({
+                element: particle,
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: (Math.random() - 0.5) * 0.8,
+                type: type
+            });
+        }
+        
+        // Animate particles with random movement
+        function animateParticles() {
+            let animationFrame;
+            
+            function updatePositions() {
+                particles.forEach(particle => {
+                    // Update position
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    // Bounce off walls
+                    if (particle.x <= 0 || particle.x >= 99) {
+                        particle.vx *= -1;
+                    }
+                    if (particle.y <= 0 || particle.y >= 99) {
+                        particle.vy *= -1;
+                    }
+                    
+                    // Apply new position
+                    particle.element.style.left = `${particle.x}%`;
+                    particle.element.style.top = `${particle.y}%`;
+                });
+                
+                animationFrame = requestAnimationFrame(updatePositions);
+            }
+            
+            // Cancel any existing animation before starting a new one
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+            
+            animationFrame = requestAnimationFrame(updatePositions);
+        }
+        
+        // Initialize the simulation
+        function initSimulation() {
+            // Initialize the charts
+            initCharts();
+            
+            // Set initial values
+            aceticConc = parseFloat(aceticConcentration.value);
+            acetateConc = parseFloat(acetateConcentration.value);
+            hclConc = parseFloat(hclConcentration.value);
+            
+            aceticValue.textContent = aceticConc.toFixed(3);
+            acetateValue.textContent = acetateConc.toFixed(3);
+            hclValue.textContent = hclConc.toFixed(3);
+            
+            // Format Ka value
+            kaValue.textContent = KA_ACETIC.toExponential(1).replace('e-', ' × 10⁻');
+            
+            // Calculate and update UI
+            const result = updateUI();
+            initialPHValue = result.pH;
+        }
+        
+        // Event Listeners
+        aceticConcentration.addEventListener('input', () => {
+            aceticConc = parseFloat(aceticConcentration.value);
+            aceticValue.textContent = aceticConc.toFixed(3);
+            updateUI();
+        });
+        
+        acetateConcentration.addEventListener('input', () => {
+            acetateConc = parseFloat(acetateConcentration.value);
+            acetateValue.textContent = acetateConc.toFixed(3);
+            updateUI();
+        });
+        
+        hclConcentration.addEventListener('input', () => {
+            hclConc = parseFloat(hclConcentration.value);
+            hclValue.textContent = hclConc.toFixed(3);
+            updateUI();
+        });
+        
+        resetBtn.addEventListener('click', () => {
+            aceticConcentration.value = 0.1;
+            acetateConcentration.value = 0.1;
+            hclConcentration.value = 0;
+            
+            aceticConc = 0.1;
+            acetateConc = 0.1;
+            hclConc = 0;
+            
+            aceticValue.textContent = aceticConc.toFixed(3);
+            acetateValue.textContent = acetateConc.toFixed(3);
+            hclValue.textContent = hclConc.toFixed(3);
+            
+            const result = updateUI();
+            initialPHValue = result.pH;
+        });
+        
+        // Handle dark mode changes for chart
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            // Re-initialize charts with new color scheme
+            if (concentrationChart) concentrationChart.destroy();
+            if (phCurveChart) phCurveChart.destroy();
+            initCharts();
+            updateUI();
+        });
+        
+        // Initialize the simulation - called immediately and again when DOM is fully loaded
+        // This helps ensure charts are properly initialized
+        initSimulation();
+        
+        // Also initialize when DOM is fully loaded to be safe
+        document.addEventListener('DOMContentLoaded', () => {
+            // If charts failed to initialize the first time, destroy and reinitialize
+            if (concentrationChart) concentrationChart.destroy();
+            if (phCurveChart) phCurveChart.destroy();
+            initCharts();
+            updateUI();
+        });
+    </script>
+</body>
+</html>
